@@ -4,7 +4,6 @@
 using System.Runtime.CompilerServices;
 #if NET5_0_OR_GREATER
 using System.Numerics;
-
 #else
 using System.Runtime.InteropServices;
 #endif
