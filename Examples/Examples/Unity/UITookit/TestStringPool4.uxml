@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:engine="UnityEngine.UIElements"
+        xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
+>
+    <engine:VisualElement class="game-ui">
+        <engine:VisualElement class="health-container" style="flex-direction: row; display: flex;">
+            <engine:Label text="Health: 100" name="health-label" class="health-text"/>
+            <engine:Label text="(Healthy)" name="status-label" class="status-text"/>
+        </engine:VisualElement>
+        <engine:Button text="Attack!" name="attack-button" class="action-button"/>
+    </engine:VisualElement>
+</engine:UXML>

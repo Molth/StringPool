@@ -1,0 +1,32 @@
+.game-ui {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.health-container {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.health-text {
+    color: #ff0000;
+    font-size: 18px;
+}
+
+.status-text {
+    color: #ff0000;
+    font-size: 18px;
+    margin-left: 5px;
+}
+
+.action-button {
+    width: 120px;
+    height: 40px;
+    background-color: #4CAF50;
+    color: white;
+}
