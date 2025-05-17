@@ -26,7 +26,7 @@ namespace Examples
 
         private static void Test2()
         {
-            using (var builder1 = ZString.CreateStringBuilder())
+            using (Utf16ValueStringBuilder builder1 = ZString.CreateStringBuilder())
             {
                 builder1.Append("Big Herta");
                 string a = StringPool.Shared.Rent(builder1.AsSpan());
@@ -34,7 +34,7 @@ namespace Examples
                 StringPool.Shared.Return(a);
             }
 
-            using (var builder2 = ZString.CreateStringBuilder())
+            using (Utf16ValueStringBuilder builder2 = ZString.CreateStringBuilder())
             {
                 builder2.Append("Small Herta");
                 string b = StringPool.Shared.Rent(builder2.AsSpan());

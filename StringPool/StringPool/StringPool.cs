@@ -3,6 +3,8 @@
 
 // ReSharper disable ALL
 
+using System.Runtime.InteropServices;
+
 namespace System.Buffers
 {
     /// <summary>
@@ -105,8 +107,18 @@ namespace System.Buffers
         ///     This callback is used by the pool to determine when to adjust its behavior based on system memory conditions.
         /// </param>
         /// <remarks>
-        ///     The memory pressure value should typically be between 0.0 (no pressure) and 1.0 (high pressure).
-        ///     The pool may use this information to be more aggressive about releasing buffers when memory pressure is high.
+        ///     <list type="bullet">
+        ///         <item>
+        ///             <description>&lt; 0.7 -> low</description>
+        ///         </item>
+        ///         <item>
+        ///             <description>[0.7, 0.9) -> medium</description>
+        ///         </item>
+        ///         <item>
+        ///             <description>&gt;= 0.9 -> high</description>
+        ///         </item>
+        ///     </list>
+        ///     The pool will be more aggressive about releasing buffers when memory pressure reaches medium or high.
         /// </remarks>
         public static unsafe void Custom(Func<double> getMemoryPressure)
         {
@@ -127,9 +139,64 @@ namespace System.Buffers
         ///     This callback is used by the pool to determine when to adjust its behavior based on system memory conditions.
         /// </param>
         /// <remarks>
-        ///     The memory pressure value should typically be between 0.0 (no pressure) and 1.0 (high pressure).
-        ///     The pool may use this information to be more aggressive about releasing buffers when memory pressure is high.
+        ///     <list type="bullet">
+        ///         <item>
+        ///             <description>&lt; 0.7 -> low</description>
+        ///         </item>
+        ///         <item>
+        ///             <description>[0.7, 0.9) -> medium</description>
+        ///         </item>
+        ///         <item>
+        ///             <description>&gt;= 0.9 -> high</description>
+        ///         </item>
+        ///     </list>
+        ///     The pool will be more aggressive about releasing buffers when memory pressure reaches medium or high.
+        /// </remarks>
+        public static unsafe void Custom(nint getMemoryPressure) => Utilities.Custom((delegate* managed<double>)getMemoryPressure);
+
+        /// <summary>
+        ///     Provides a way to customize the behavior of the pool by specifying a memory pressure callback.
+        /// </summary>
+        /// <param name="getMemoryPressure">
+        ///     A function pointer to a managed method that returns the current memory pressure as a double value.
+        ///     This callback is used by the pool to determine when to adjust its behavior based on system memory conditions.
+        /// </param>
+        /// <remarks>
+        ///     <list type="bullet">
+        ///         <item>
+        ///             <description>&lt; 0.7 -> low</description>
+        ///         </item>
+        ///         <item>
+        ///             <description>[0.7, 0.9) -> medium</description>
+        ///         </item>
+        ///         <item>
+        ///             <description>&gt;= 0.9 -> high</description>
+        ///         </item>
+        ///     </list>
+        ///     The pool will be more aggressive about releasing buffers when memory pressure reaches medium or high.
         /// </remarks>
         public static unsafe void Custom(delegate* managed<double> getMemoryPressure) => Utilities.Custom(getMemoryPressure);
+
+        /// <summary>
+        ///     Creates a <see cref="Span{Char}" /> of the characters of a string.
+        /// </summary>
+        /// <param name="array">The string to create a <see cref="Span{Char}" />.</param>
+        /// <returns>A <see cref="Span{Char}" /> representing the characters of the string.</returns>
+        public static Span<char> AsSpan(string array)
+        {
+            ReadOnlySpan<char> span = array.AsSpan();
+            return MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(span), span.Length);
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="Memory{Char}" /> of the characters of a string.
+        /// </summary>
+        /// <param name="array">The string to create a <see cref="Memory{Char}" />.</param>
+        /// <returns>A <see cref="Memory{Char}" /> representing the characters of the string.</returns>
+        public static Memory<char> AsMemory(string array)
+        {
+            ReadOnlyMemory<char> memory = array.AsMemory();
+            return MemoryMarshal.AsMemory(memory);
+        }
     }
 }

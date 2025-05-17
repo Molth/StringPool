@@ -3,7 +3,6 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 // ReSharper disable ALL
 
@@ -26,8 +25,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Clear(string array)
         {
-            ReadOnlySpan<char> readOnlySpan = array.AsSpan();
-            Span<char> span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(readOnlySpan), readOnlySpan.Length);
+            Span<char> span = StringPool.AsSpan(array);
             span.Clear();
         }
 

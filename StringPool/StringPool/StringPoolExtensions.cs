@@ -1,8 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Runtime.InteropServices;
-
 // ReSharper disable ALL
 
 namespace System.Buffers
@@ -31,8 +29,7 @@ namespace System.Buffers
         {
             string array = pool.Rent(buffer.Length);
 
-            ReadOnlySpan<char> readOnlySpan = array.AsSpan();
-            Span<char> span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(readOnlySpan), readOnlySpan.Length);
+            Span<char> span = StringPool.AsSpan(array);
             buffer.CopyTo(span);
 
             return array;
