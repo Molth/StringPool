@@ -19,9 +19,8 @@ namespace Examples
                 string a = StringPool.Shared.Rent(10000);
                 using Utf16ValueStringBuilder builder = ZString.CreateStringBuilder();
                 builder.Append("Herta");
-                ReadOnlySpan<char> span = a.AsSpan();
-                Span<char> span2 = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(span), span.Length);
-                builder.TryCopyTo(span2, out _);
+                Span<char> span = StringPool.AsSpan(a);
+                builder.TryCopyTo(span, out _);
                 text.text = a;
             }
         }

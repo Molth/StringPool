@@ -87,10 +87,7 @@ namespace Examples
             if (_statusText != null)
                 StringPool.Shared.Return(_statusText);
 
-            string text = StringPool.Shared.Rent(10000);
-            ReadOnlySpan<char> span = text.AsSpan();
-            Span<char> span2 = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(span), span.Length);
-            builder.TryCopyTo(span2, out _);
+            string text = StringPool.Shared.Rent(builder.AsSpan());
 
             _statusText = text;
 
