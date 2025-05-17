@@ -1,6 +1,5 @@
 ﻿using System.Buffers;
 using Cysharp.Text;
-using NativeCollections;
 
 namespace Examples
 {
@@ -14,8 +13,9 @@ namespace Examples
         private static void Test1()
         {
             string a = StringPool.Shared.Rent("Big Herta".Length);
-            NativeString str = NativeString.Create(a, 0);
-            str.Append("Big Herta");
+            var span = StringPool.AsSpan(a);
+            for (int i = 0; i < "Big Herta".Length; i++)
+                span[i] = "Big Herta"[i];
             Console.WriteLine(a);
             StringPool.Shared.Return(a);
 
