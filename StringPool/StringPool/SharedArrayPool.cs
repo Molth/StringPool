@@ -111,7 +111,7 @@ namespace System.Buffers
                 // as it's a valid length array, and we want the pool to be usable in general instead of using
                 // `new`, even for computed lengths. But, there's no need to log the empty array.  Our pool is
                 // effectively infinite for empty arrays and we'll never allocate for rents and never store for returns.
-                return Utilities.Create(0);
+                return string.Empty;
             }
             else
             {

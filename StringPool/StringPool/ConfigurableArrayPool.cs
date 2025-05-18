@@ -70,7 +70,7 @@ namespace System.Buffers
             {
                 // No need for events with the empty array.  Our pool is effectively infinite
                 // and we'll never allocate for rents and never store for returns.
-                return Utilities.Create(0);
+                return string.Empty;
             }
 
             StringPoolEventSource log = StringPoolEventSource.Log;
