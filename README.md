@@ -56,9 +56,8 @@
   - returns `true` if a new buffer was rented,
   - returns `false` if no new buffer was rented.
 
-  <br>
+    You can use `public static implicit operator string?(UnsafeString? @string)` to convert an `UnsafeString` to a `string`,
 
-  - You can use `public static implicit operator string?(UnsafeString? @string)` to convert an `UnsafeString` to a `string`,
   - the string's `Length` will be equal to `buffer.Length`.
 
 - `public void Dispose()`
@@ -91,8 +90,6 @@
 - If you need the rented string’s actual length to equal the requested length,
 - use `UnsafeString`'s `public bool SetText(ReadOnlySpan<char> buffer)`,
 - and be sure to call `UnsafeString`'s `public void Dispose()`.
-
-<br>
 
 ⚠️ The `string` converted from `UnsafeString`:
 
