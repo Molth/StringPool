@@ -567,7 +567,10 @@ namespace System.Buffers
         /// </remarks>
         private static int GetPartitionCount()
         {
-            int partitionCount = TryGetInt32EnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT", out int result) && result > 0 ? result : int.MaxValue; // no limit other than processor count
+            if (!TryGetInt32EnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT", out int result))
+                result = StringPool._DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT;
+
+            int partitionCount = result > 0 ? result : int.MaxValue; // no limit other than processor count
             return Math.Min(partitionCount, Environment.ProcessorCount);
         }
 
@@ -578,7 +581,10 @@ namespace System.Buffers
         /// </returns>
         private static int GetMaxArraysPerPartition()
         {
-            return TryGetInt32EnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION", out int result) && result > 0 ? result : 256; // arbitrary limit
+            if (!TryGetInt32EnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION", out int result))
+                result = StringPool._DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION;
+
+            return result > 0 ? result : 256; // arbitrary limit
         }
 
         /// <summary>Look up an environment variable and try to parse it as an Int32.</summary>
