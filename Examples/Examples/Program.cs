@@ -1,4 +1,6 @@
 ﻿using System.Buffers;
+using System.Security.Cryptography;
+using System.Text;
 using Cysharp.Text;
 
 // ReSharper disable ALL
@@ -59,8 +61,15 @@ namespace Examples
                 {
                     Console.WriteLine("Dispose before: " + str.Length);
                     Console.WriteLine(str + ": " + str.Length);
+                    var hash1 = SHA256.HashData(Encoding.UTF8.GetBytes(str));
                     str1.Dispose();
                     Console.WriteLine("Disposed: " + str.Length);
+                    Console.WriteLine();
+                    var hash2 = SHA256.HashData(Encoding.UTF8.GetBytes(str));
+                    Console.WriteLine(hash1.AsSpan().SequenceEqual(hash2));
+                    var hash3 = SHA256.HashData(Encoding.UTF8.GetBytes("Big Herta"));
+                    Console.WriteLine(hash1.AsSpan().SequenceEqual(hash3));
+                    Console.WriteLine(hash2.AsSpan().SequenceEqual(hash3));
                     Console.WriteLine();
                 }
             }
