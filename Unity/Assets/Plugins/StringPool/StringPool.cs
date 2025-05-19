@@ -1,9 +1,9 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-// ReSharper disable ALL
-
 using System.Runtime.InteropServices;
+
+// ReSharper disable ALL
 
 namespace System.Buffers
 {
@@ -19,6 +19,26 @@ namespace System.Buffers
     ///     <para>
     ///         This class is thread-safe.  All members may be used by multiple threads concurrently.
     ///     </para>
+    ///     <para>
+    ///         Environment variables configuration:
+    ///     </para>
+    ///     <list type="table">
+    ///         <listheader>
+    ///             <term>Variable</term>
+    ///             <description>Description</description>
+    ///         </listheader>
+    ///         <item>
+    ///             <term>DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION</term>
+    ///             <description>Maximum strings per partition (default: 256)</description>
+    ///         </item>
+    ///         <item>
+    ///             <term>DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT</term>
+    ///             <description>
+    ///                 Maximum number of partitions (default: <see cref="int.MaxValue" />, clamped to
+    ///                 <see cref="Environment.ProcessorCount" />)
+    ///             </description>
+    ///         </item>
+    ///     </list>
     /// </remarks>
     public abstract class StringPool
     {
@@ -176,6 +196,48 @@ namespace System.Buffers
         ///     The pool will be more aggressive about releasing buffers when memory pressure reaches medium or high.
         /// </remarks>
         public static unsafe void Custom(delegate* managed<double> getMemoryPressure) => Utilities.Custom(getMemoryPressure);
+
+        /// <summary>
+        ///     Configures the parameters for the shared <see cref="StringPool" /> instance before it is created.
+        /// </summary>
+        /// <param name="DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION">
+        ///     The maximum number of string instances that may be stored in each partition of the shared pool.
+        /// </param>
+        /// <param name="DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT">
+        ///     The maximum number of partitions in the shared pool.
+        /// </param>
+        /// <remarks>
+        ///     <para>
+        ///         This method must be called before the first access to <see cref="StringPool.Shared" /> property.
+        ///         After the shared pool instance is created (on first access to <see cref="StringPool.Shared" />),
+        ///         any subsequent calls to this method will have no effect.
+        ///     </para>
+        ///     <para>
+        ///         These configuration values will be used when the shared pool is first created:
+        ///         <list type="bullet">
+        ///             <item>
+        ///                 <description>Maximum strings per partition (default: 256)</description>
+        ///             </item>
+        ///             <item>
+        ///                 <description>
+        ///                     Maximum partition count (default: <see cref="int.MaxValue" />, clamped to
+        ///                     <see cref="Environment.ProcessorCount" />)
+        ///                 </description>
+        ///             </item>
+        ///         </list>
+        ///     </para>
+        /// </remarks>
+        public static void Configure(int DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION = 256, int DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT = int.MaxValue)
+        {
+            if (DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION < 0)
+                throw new ArgumentOutOfRangeException(nameof(DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION), DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION, "MustBeNonNegative");
+
+            if (DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT < 0)
+                throw new ArgumentOutOfRangeException(nameof(DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT), DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT, "MustBeNonNegative");
+
+            Environment.SetEnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT", DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT.ToString());
+            Environment.SetEnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION", DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION.ToString());
+        }
 
         /// <summary>
         ///     Creates a <see cref="Span{Char}" /> of the characters of a string.

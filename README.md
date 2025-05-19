@@ -67,19 +67,30 @@
 
 ### `Customization`
 
-- You can use `StringPool.Custom` to override:
+- You can use:
 
-  - `public static unsafe void Custom(Func<double> getMemoryPressure)`.
+  - `public static unsafe void Custom(Func<double> getMemoryPressure)`
 
-    or
+  - `public static unsafe void Custom(nint getMemoryPressure)`
 
-  - `public static unsafe void Custom(delegate* managed<double> getMemoryPressure)`.
+  - `public static unsafe void Custom(delegate* managed<double> getMemoryPressure)`
 
   to customize how `StringPool` determines memory pressure for its automatic `Trim()` behavior.
 
   - `< 0.7` -> low
   - `[0.7, 0.9)` -> medium
   - `>= 0.9` -> high
+
+- You can use:
+
+  - `public static void Configure(int DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION = 256, int DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT = int.MaxValue)`
+
+  to pre-configure the `StringPool.Shared` parameters before initialization.
+
+  - `DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION`: Maximum `strings` per `partition` (default: `256`)
+  - `DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT`: Maximum `partition` count (default: `int.MaxValue`, clamped to `Environment.ProcessorCount`)
+
+  ⚠️ Has no effect after `StringPool.Shared` is initialized.
 
 ---
 

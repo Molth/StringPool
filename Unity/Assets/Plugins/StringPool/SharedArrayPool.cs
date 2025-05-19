@@ -27,6 +27,31 @@ namespace System.Buffers
     /// </remarks>
     internal sealed class SharedArrayPool : StringPool
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="SharedArrayPool" /> class.
+        /// </summary>
+        /// <remarks>
+        ///     <list type="table">
+        ///         <listheader>
+        ///             <term>Variable</term>
+        ///             <description>Description</description>
+        ///         </listheader>
+        ///         <item>
+        ///             <term>DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT</term>
+        ///             <description>Maximum number of partitions (default: int.MaxValue, clamped to processor count)</description>
+        ///         </item>
+        ///         <item>
+        ///             <term>DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION</term>
+        ///             <description>Maximum strings per partition (default: 256)</description>
+        ///         </item>
+        ///     </list>
+        /// </remarks>
+        public SharedArrayPool()
+        {
+            _ = SharedArrayPoolStatics.s_maxArraysPerPartition;
+            _ = SharedArrayPoolStatics.s_partitionCount;
+        }
+
         /// <summary>The number of buckets (array sizes) in the pool, one for each array length, starting from length 16.</summary>
         private const int NumBuckets = 27; // Utilities.SelectBucketIndex(1024 * 1024 * 1024 + 1)
 
@@ -542,7 +567,7 @@ namespace System.Buffers
         /// </remarks>
         private static int GetPartitionCount()
         {
-            int partitionCount = TryGetInt32EnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDARRAYPOOL_MAXPARTITIONCOUNT", out int result) && result > 0 ? result : int.MaxValue; // no limit other than processor count
+            int partitionCount = TryGetInt32EnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXPARTITIONCOUNT", out int result) && result > 0 ? result : int.MaxValue; // no limit other than processor count
             return Math.Min(partitionCount, Environment.ProcessorCount);
         }
 
@@ -553,7 +578,7 @@ namespace System.Buffers
         /// </returns>
         private static int GetMaxArraysPerPartition()
         {
-            return TryGetInt32EnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDARRAYPOOL_MAXARRAYSPERPARTITION", out int result) && result > 0 ? result : 32; // arbitrary limit
+            return TryGetInt32EnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDSTRINGPOOL_MAXSTRINGSPERPARTITION", out int result) && result > 0 ? result : 256; // arbitrary limit
         }
 
         /// <summary>Look up an environment variable and try to parse it as an Int32.</summary>
