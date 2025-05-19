@@ -68,7 +68,7 @@ namespace System.Buffers
         /// <summary>
         ///     Determines reference equality between this instance's buffer and another <see cref="UnsafeString" />'s buffer.
         /// </summary>
-        public bool Equals(UnsafeString? other) => other != null && Equals(other._array);
+        public bool Equals(UnsafeString? other) => (string?)this == (string?)other;
 
         /// <summary>
         ///     Determines equality with any object, supporting both string and <see cref="UnsafeString" /> comparisons.
@@ -76,10 +76,10 @@ namespace System.Buffers
         public override bool Equals(object? obj)
         {
             if (obj is string str)
-                return Equals(str);
+                return (string?)this == str;
 
             if (obj is UnsafeString other)
-                return Equals(other._array);
+                return (string?)this == (string?)other;
 
             return false;
         }
@@ -93,11 +93,6 @@ namespace System.Buffers
         ///     Returns the underlying string buffer or null if disposed.
         /// </summary>
         public override string? ToString() => _array;
-
-        /// <summary>
-        ///     Implicitly converts the <see cref="UnsafeString" /> into its underlying string buffer.
-        /// </summary>
-        public static implicit operator string?(UnsafeString? @string) => @string?._array;
 
         /// <summary>
         ///     Copies characters into the underlying buffer, resizing if necessary.
@@ -183,6 +178,79 @@ namespace System.Buffers
 
             return bufferChanged;
         }
+
+        /// <summary>
+        ///     Implicitly converts the <see cref="UnsafeString" /> into its underlying string buffer.
+        /// </summary>
+        public static implicit operator string?(UnsafeString? @string) => @string?._array;
+
+        /// <summary>
+        ///     Determines whether two <see cref="UnsafeString" /> instances reference the same underlying buffer.
+        /// </summary>
+        /// <param name="a">The first <see cref="UnsafeString" /> to compare</param>
+        /// <param name="b">The second <see cref="UnsafeString" /> to compare</param>
+        /// <returns>
+        ///     true if both instances reference the same underlying buffer or are both null;
+        ///     otherwise, false
+        /// </returns>
+        public static bool operator ==(UnsafeString? a, UnsafeString? b) => (string?)a == (string?)b;
+
+        /// <summary>
+        ///     Determines whether two <see cref="UnsafeString" /> instances reference different underlying buffers.
+        /// </summary>
+        /// <param name="a">The first <see cref="UnsafeString" /> to compare</param>
+        /// <param name="b">The second <see cref="UnsafeString" /> to compare</param>
+        /// <returns>
+        ///     true if the instances reference different underlying buffers or if one is null while the other is not;
+        ///     otherwise, false
+        /// </returns>
+        public static bool operator !=(UnsafeString? a, UnsafeString? b) => (string?)a != (string?)b;
+
+        /// <summary>
+        ///     Determines whether an <see cref="UnsafeString" /> and a string reference the same underlying buffer.
+        /// </summary>
+        /// <param name="a">The <see cref="UnsafeString" /> to compare</param>
+        /// <param name="b">The string to compare</param>
+        /// <returns>
+        ///     true if the <see cref="UnsafeString" />'s buffer and the string are reference equal or both null;
+        ///     otherwise, false
+        /// </returns>
+        public static bool operator ==(UnsafeString? a, string? b) => (string?)a == b;
+
+        /// <summary>
+        ///     Determines whether an <see cref="UnsafeString" /> and a string reference different underlying buffers.
+        /// </summary>
+        /// <param name="a">The <see cref="UnsafeString" /> to compare</param>
+        /// <param name="b">The string to compare</param>
+        /// <returns>
+        ///     true if the <see cref="UnsafeString" />'s buffer and the string are not reference equal or if one is null while the
+        ///     other is not;
+        ///     otherwise, false
+        /// </returns>
+        public static bool operator !=(UnsafeString? a, string? b) => (string?)a != b;
+
+        /// <summary>
+        ///     Determines whether a string and an <see cref="UnsafeString" /> reference the same underlying buffer.
+        /// </summary>
+        /// <param name="a">The string to compare</param>
+        /// <param name="b">The <see cref="UnsafeString" /> to compare</param>
+        /// <returns>
+        ///     true if the string and the <see cref="UnsafeString" />'s buffer are reference equal or both null;
+        ///     otherwise, false
+        /// </returns>
+        public static bool operator ==(string? a, UnsafeString? b) => a == (string?)b;
+
+        /// <summary>
+        ///     Determines whether a string and an <see cref="UnsafeString" /> reference different underlying buffers.
+        /// </summary>
+        /// <param name="a">The string to compare</param>
+        /// <param name="b">The <see cref="UnsafeString" /> to compare</param>
+        /// <returns>
+        ///     true if the string and the <see cref="UnsafeString" />'s buffer are not reference equal or if one is null while the
+        ///     other is not;
+        ///     otherwise, false
+        /// </returns>
+        public static bool operator !=(string? a, UnsafeString? b) => a != (string?)b;
 
         /// <summary>
         ///     Mimics the internal layout of System.String for unsafe field manipulation.
