@@ -78,9 +78,13 @@
 
   to customize how `StringPool` determines memory pressure for its automatic `Trim()` behavior.
 
+  - `< 0.7` -> low
+  - `[0.7, 0.9)` -> medium
+  - `>= 0.9` -> high
+
 ---
 
-## Note:
+## Note
 
 ⚠️ The actual length of the string rented from `StringPool`'s`Rent` may not match the requested length.
 
