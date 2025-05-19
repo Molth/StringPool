@@ -1,19 +1,21 @@
 ﻿using System.Buffers;
 using Cysharp.Text;
 
+// ReSharper disable ALL
+
 namespace Examples
 {
     internal sealed class Program
     {
         private static void Main()
         {
-            Test2();
+            Test3();
         }
 
         private static void Test1()
         {
             string a = StringPool.Shared.Rent("Big Herta".Length);
-            var span = StringPool.AsSpan(a);
+            Span<char> span = StringPool.AsSpan(a);
             for (int i = 0; i < "Big Herta".Length; i++)
                 span[i] = "Big Herta"[i];
             Console.WriteLine(a);
@@ -40,6 +42,36 @@ namespace Examples
                 string b = StringPool.Shared.Rent(builder2.AsSpan());
                 Console.WriteLine(b);
                 StringPool.Shared.Return(b);
+            }
+        }
+
+        private static void Test3()
+        {
+            UnsafeString str1 = new UnsafeString();
+            using UnsafeString str2 = new UnsafeString();
+
+            using (Utf16ValueStringBuilder builder1 = ZString.CreateStringBuilder())
+            {
+                builder1.Append("Big Herta");
+                str1.SetText(builder1.AsSpan());
+                string? str = str1;
+                if (str != null)
+                {
+                    Console.WriteLine("Dispose before: " + str.Length);
+                    Console.WriteLine(str + ": " + str.Length);
+                    str1.Dispose();
+                    Console.WriteLine("Disposed: " + str.Length);
+                    Console.WriteLine();
+                }
+            }
+
+            using (Utf16ValueStringBuilder builder2 = ZString.CreateStringBuilder())
+            {
+                builder2.Append("Small Herta");
+                str2.SetText(builder2.AsSpan());
+                string? str = str2;
+                if (str != null)
+                    Console.WriteLine(str + ": " + str.Length);
             }
         }
     }
