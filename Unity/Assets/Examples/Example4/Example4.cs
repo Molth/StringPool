@@ -17,6 +17,7 @@ namespace Examples
                     {
                         using (var builder1 = ZString.CreateStringBuilder())
                         {
+                            builder1.Append(Guid.NewGuid());
                             builder1.Append("Big Herta");
                             var text1 = StringPool.Shared.Rent(builder1.AsSpan());
                             Debug.Log(text1);
@@ -25,6 +26,7 @@ namespace Examples
 
                         using (var builder2 = ZString.CreateStringBuilder())
                         {
+                            builder2.Append(Guid.NewGuid());
                             builder2.Append("Small Herta");
                             var text2 = StringPool.Shared.Rent(builder2.AsSpan());
                             Debug.Log(text2);
@@ -42,12 +44,14 @@ namespace Examples
                     {
                         using (var builder1 = ZString.CreateStringBuilder())
                         {
+                            builder1.Append(Guid.NewGuid());
                             builder1.Append("Big Herta");
                             Debug.Log(builder1);
                         }
 
                         using (var builder2 = ZString.CreateStringBuilder())
                         {
+                            builder2.Append(Guid.NewGuid());
                             builder2.Append("Small Herta");
                             Debug.Log(builder2);
                         }
