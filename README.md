@@ -96,7 +96,7 @@
 
 ## Note
 
-⚠️ The actual length of the string rented from `StringPool`'s`Rent` may not match the requested length.
+⚠️ The actual length of the string rented from `StringPool`'s `Rent` may not match the requested length.
 
 - If you need the rented string’s actual length to equal the requested length,
 - use `UnsafeString`'s `public bool SetText(ReadOnlySpan<char> buffer)`,
