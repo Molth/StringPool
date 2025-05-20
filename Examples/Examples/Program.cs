@@ -11,7 +11,7 @@ namespace Examples
     {
         private static void Main()
         {
-            Test3();
+            Test4();
         }
 
         private static void Test1()
@@ -61,13 +61,50 @@ namespace Examples
                 {
                     Console.WriteLine("Dispose before: " + str.Length);
                     Console.WriteLine(str + ": " + str.Length);
-                    var hash1 = SHA256.HashData(Encoding.UTF8.GetBytes(str));
+                    byte[] hash1 = SHA256.HashData(Encoding.UTF8.GetBytes(str));
                     str1.Dispose();
                     Console.WriteLine("Disposed: " + str.Length);
                     Console.WriteLine();
-                    var hash2 = SHA256.HashData(Encoding.UTF8.GetBytes(str));
+                    byte[] hash2 = SHA256.HashData(Encoding.UTF8.GetBytes(str));
                     Console.WriteLine(hash1.AsSpan().SequenceEqual(hash2));
-                    var hash3 = SHA256.HashData(Encoding.UTF8.GetBytes("Big Herta"));
+                    byte[] hash3 = SHA256.HashData(Encoding.UTF8.GetBytes("Big Herta"));
+                    Console.WriteLine(hash1.AsSpan().SequenceEqual(hash3));
+                    Console.WriteLine(hash2.AsSpan().SequenceEqual(hash3));
+                    Console.WriteLine();
+                }
+            }
+
+            using (Utf16ValueStringBuilder builder2 = ZString.CreateStringBuilder())
+            {
+                builder2.Append("Small Herta");
+                str2.SetText(builder2.AsSpan());
+                string? str = str2;
+                if (str != null)
+                    Console.WriteLine(str + ": " + str.Length);
+            }
+        }
+
+        private static void Test4()
+        {
+            UnsafeValueString str1 = new UnsafeValueString();
+            using UnsafeValueString str2 = new UnsafeValueString();
+
+            using (Utf16ValueStringBuilder builder1 = ZString.CreateStringBuilder())
+            {
+                builder1.Append("Big Herta");
+                str1.SetText(builder1.AsSpan());
+                string? str = str1;
+                if (str != null)
+                {
+                    Console.WriteLine("Dispose before: " + str.Length);
+                    Console.WriteLine(str + ": " + str.Length);
+                    byte[] hash1 = SHA256.HashData(Encoding.UTF8.GetBytes(str));
+                    str1.Dispose();
+                    Console.WriteLine("Disposed: " + str.Length);
+                    Console.WriteLine();
+                    byte[] hash2 = SHA256.HashData(Encoding.UTF8.GetBytes(str));
+                    Console.WriteLine(hash1.AsSpan().SequenceEqual(hash2));
+                    byte[] hash3 = SHA256.HashData(Encoding.UTF8.GetBytes("Big Herta"));
                     Console.WriteLine(hash1.AsSpan().SequenceEqual(hash3));
                     Console.WriteLine(hash2.AsSpan().SequenceEqual(hash3));
                     Console.WriteLine();
