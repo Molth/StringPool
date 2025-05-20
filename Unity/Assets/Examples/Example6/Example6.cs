@@ -3,16 +3,19 @@ using System.Buffers;
 using Cysharp.Text;
 using UnityEngine;
 
+#pragma warning disable CS8632
+
 namespace Examples
 {
     public static class MiniLog
     {
-        private static readonly UnsafeString Buffer = new();
+        [ThreadStatic] private static UnsafeString? _buffer;
 
         public static void Log(ReadOnlySpan<char> message)
         {
-            Buffer.SetText(message);
-            Debug.Log(Buffer);
+            var buffer = _buffer ??= new UnsafeString();
+            buffer.SetText(message);
+            Debug.Log(buffer);
         }
     }
 
