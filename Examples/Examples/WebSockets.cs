@@ -1,6 +1,7 @@
 ﻿using System.Buffers;
 using System.Security.Cryptography;
 using System.Text;
+using Cysharp.Text;
 
 // ReSharper disable ALL
 
@@ -10,7 +11,10 @@ namespace Examples
     {
         public static void Test()
         {
-            string str = Guid.NewGuid().ToString();
+            using Utf16ValueStringBuilder builder = ZString.CreateStringBuilder();
+
+            builder.Append(Guid.NewGuid());
+            ReadOnlySpan<char> str = builder.AsSpan();
 
             string str1 = SHA1ToBase64String(str);
 
@@ -23,7 +27,9 @@ namespace Examples
 
             // do again
 
-            str = Guid.NewGuid().ToString();
+            builder.Clear();
+            builder.Append(Guid.NewGuid());
+            str = builder.AsSpan();
 
             str1 = SHA1ToBase64String(str);
 
@@ -38,7 +44,10 @@ namespace Examples
 
         public static void Test2()
         {
-            string str = Guid.NewGuid().ToString();
+            using Utf16ValueStringBuilder builder = ZString.CreateStringBuilder();
+
+            builder.Append(Guid.NewGuid());
+            ReadOnlySpan<char> str = builder.AsSpan();
 
             string str1 = SHA1ToBase64String(str);
 
@@ -48,7 +57,9 @@ namespace Examples
 
             // do again
 
-            str = Guid.NewGuid().ToString();
+            builder.Clear();
+            builder.Append(Guid.NewGuid());
+            str = builder.AsSpan();
 
             str1 = SHA1ToBase64String(str);
 
@@ -57,7 +68,7 @@ namespace Examples
             Console.WriteLine(str1 == str2);
         }
 
-        public static string SHA1ToBase64String(string key)
+        public static string SHA1ToBase64String(ReadOnlySpan<char> key)
         {
             int byteCount = Encoding.UTF8.GetByteCount(key);
             Span<byte> source = stackalloc byte[byteCount];
@@ -80,11 +91,11 @@ namespace Examples
             Convert.TryToBase64Chars(bytes, StringPool.AsSpan(key!), out _);
         }
 
-        [ThreadStatic] private static UnsafeString? _key;
+        [ThreadStatic] private static StrongReference<UnsafeString>? _key;
 
-        public static string SHA1ToBase64String3(string str)
+        public static string SHA1ToBase64String3(ReadOnlySpan<char> str)
         {
-            UnsafeString key = _key ??= new UnsafeString();
+            UnsafeString key = (_key ??= new StrongReference<UnsafeString>(new UnsafeString())).Value!;
             key.SetText(str);
 
             int byteCount = Encoding.UTF8.GetByteCount((string?)key!);
