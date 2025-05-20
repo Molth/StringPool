@@ -11,7 +11,7 @@ namespace Examples
     {
         private static void Main()
         {
-            Test4();
+            WebSockets.Test();
         }
 
         private static void Test1()
