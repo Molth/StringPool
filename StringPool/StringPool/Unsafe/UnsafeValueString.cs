@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 #pragma warning disable CS0169
 #pragma warning disable CS1591
@@ -285,22 +284,5 @@ namespace System.Buffers
         ///     otherwise, false
         /// </returns>
         public static bool operator !=(UnsafeValueString a, UnsafeString b) => (string?)a != (string?)b;
-
-        /// <summary>
-        ///     Mimics the internal layout of System.String for unsafe field manipulation.
-        /// </summary>
-        [StructLayout(LayoutKind.Sequential)]
-        private sealed class DummyString
-        {
-            /// <summary>
-            ///     Maps to System.String._stringLength for unsafe length modification.
-            /// </summary>
-            public int _stringLength;
-
-            /// <summary>
-            ///     Maps to System.String._firstChar (unused but required for layout matching).
-            /// </summary>
-            private char _firstChar;
-        }
     }
 }
