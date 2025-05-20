@@ -36,6 +36,27 @@ namespace Examples
             buffer.Dispose();
         }
 
+        public static void Test2()
+        {
+            string str = Guid.NewGuid().ToString();
+
+            string str1 = SHA1ToBase64String(str);
+
+            string str2 = SHA1ToBase64String3(str);
+
+            Console.WriteLine(str1 == str2);
+
+            // do again
+
+            str = Guid.NewGuid().ToString();
+
+            str1 = SHA1ToBase64String(str);
+
+            str2 = SHA1ToBase64String3(str);
+
+            Console.WriteLine(str1 == str2);
+        }
+
         public static string SHA1ToBase64String(string key)
         {
             int byteCount = Encoding.UTF8.GetByteCount(key);
@@ -57,6 +78,25 @@ namespace Examples
 
             key.SetLength(28);
             Convert.TryToBase64Chars(bytes, StringPool.AsSpan(key!), out _);
+        }
+
+        [ThreadStatic] private static UnsafeString? _key;
+
+        public static string SHA1ToBase64String3(string str)
+        {
+            UnsafeString key = _key ??= new UnsafeString();
+            key.SetText(str);
+
+            int byteCount = Encoding.UTF8.GetByteCount((string?)key!);
+            Span<byte> source = stackalloc byte[byteCount];
+            _ = Encoding.UTF8.GetBytes((string?)key!, source);
+            Span<byte> bytes = stackalloc byte[20];
+            _ = SHA1.HashData(source, bytes);
+
+            key.SetLength(28);
+            Convert.TryToBase64Chars(bytes, StringPool.AsSpan(key!), out _);
+
+            return (string?)key!;
         }
     }
 }
